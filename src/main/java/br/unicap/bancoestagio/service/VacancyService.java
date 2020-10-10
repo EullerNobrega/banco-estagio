@@ -1,9 +1,12 @@
 package br.unicap.bancoestagio.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
+import br.unicap.bancoestagio.model.Skill;
 import br.unicap.bancoestagio.model.Vacancy;
 import br.unicap.bancoestagio.repository.VacancyRepository;
 import br.unicap.bancoestagio.service.serviceInterface.IVacancyService;
@@ -13,9 +16,14 @@ import io.quarkus.panache.common.Sort;
 @ApplicationScoped
 public class VacancyService implements IVacancyService {
     PanacheRepository<Vacancy> vacancyRepository = new VacancyRepository();
-
+    @Inject
+    SkillService skillService;
+    
     @Override
     public void save(Vacancy v) {
+        List<Skill> skills = new ArrayList();
+        v.getSkills().forEach(skill -> skills.add(skillService.get(skill.getDescription())));
+        v.setSkills(skills);
         vacancyRepository.persist(v);
     }
 
