@@ -1,9 +1,12 @@
 package br.unicap.bancoestagio.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
+import br.unicap.bancoestagio.model.Skill;
 import br.unicap.bancoestagio.model.Student;
 import br.unicap.bancoestagio.repository.StudentRepository;
 import br.unicap.bancoestagio.service.serviceInterface.IServiceStudent;
@@ -13,9 +16,14 @@ import io.quarkus.panache.common.Sort;
 @ApplicationScoped
 public class StudentService implements IServiceStudent {
     PanacheRepository<Student> studentRepository = new StudentRepository();
+    @Inject
+    SkillService skillService;
 
     @Override
     public void save(Student s) {
+        List<Skill> skills = new ArrayList();
+        s.getSkills().forEach(skill -> skills.add(skillService.get(skill.getDescription())));
+        s.setSkills(skills);
         studentRepository.persist(s);
     }
 
