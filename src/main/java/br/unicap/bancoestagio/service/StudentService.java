@@ -28,8 +28,8 @@ public class StudentService implements IServiceStudent {
     }
 
     @Override
-    public void update(Student s) {
-        Student student = studentRepository.findById(s.id);
+    public void update(Long id, Student s) {
+        Student student = studentRepository.findById(id);
         List<Skill> skills = new ArrayList();
         
         s.getSkills().forEach(skill -> skills.add(skillService.get(skill.getDescription())));

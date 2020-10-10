@@ -8,7 +8,7 @@ public interface IVacancyService {
 
    public void save(Vacancy v);
 
-   public void update(Vacancy v);
+   public void update(Long id, Vacancy v);
 
    public void delete(Long id);
 

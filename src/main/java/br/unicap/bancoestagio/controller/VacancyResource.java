@@ -51,7 +51,7 @@ public class VacancyResource {
     @Path("/{id}")
     @Transactional
     public Response update(@PathParam("id") Long id, Vacancy vacancy) {
-        vacancyService.update(vacancy);
+        vacancyService.update(id, vacancy);
         return Response.status(Status.ACCEPTED).build();
     }
 

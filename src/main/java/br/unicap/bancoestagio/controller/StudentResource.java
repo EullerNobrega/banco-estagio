@@ -33,8 +33,8 @@ public class StudentResource {
     }
 
     @GET
-    @Path("/{registration}")
-    public Response get(@PathParam("registration") Long id) {
+    @Path("/{id}")
+    public Response get(@PathParam("id") Long id) {
         Student s = studentService.get(id);
         return Response.ok().entity(s).build();
     }
@@ -48,23 +48,23 @@ public class StudentResource {
     }
 
     @PUT
-    @Path("/{registration}")
+    @Path("/{id}")
     @Transactional
-    public Response update(@PathParam("registration") String registration, Student student) {
-        studentService.update(student);
+    public Response update(@PathParam("id") Long id, Student student) {
+        studentService.update(id, student);
         return Response.status(Status.ACCEPTED).build();
     }
 
     @DELETE
-    @Path("/{registration}")
+    @Path("/{id}")
     @Transactional
-    public Response delete(@PathParam("registration") Long id) {
+    public Response delete(@PathParam("id") Long id) {
         studentService.delete(id);
         return Response.status(Status.ACCEPTED).build();
     }
 
     @GET
-    @Path("/{registration}/vacancies")
+    @Path("/{id}/vacancies")
     public List<Vacancy> findVacanciesForStudent(@PathParam("registration") Long id) {
         return null;
     }
