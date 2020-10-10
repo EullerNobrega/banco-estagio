@@ -30,11 +30,13 @@ public class VacancyService implements IVacancyService {
     @Override
     public void update(Vacancy v) {
         Vacancy vacancy = vacancyRepository.findById(v.id);
+        List<Skill> skills = new ArrayList();
+        v.getSkills().forEach(skill -> skills.add(skillService.get(skill.getDescription())));
         vacancy.setDescription(v.getDescription());
         vacancy.setEmail(v.getEmail());
         vacancy.setTitle(v.getTitle());
         vacancy.setMinSemester(v.getMinSemester());
-        vacancy.setSkills(v.getSkills());
+        v.setSkills(skills);
     }
 
     @Override

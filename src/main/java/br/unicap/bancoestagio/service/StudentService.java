@@ -30,10 +30,15 @@ public class StudentService implements IServiceStudent {
     @Override
     public void update(Student s) {
         Student student = studentRepository.findById(s.id);
+        List<Skill> skills = new ArrayList();
+        
+        s.getSkills().forEach(skill -> skills.add(skillService.get(skill.getDescription())));
+        s.setSkills(skills);
+        
         student.setName(s.getName());
         student.setEmail(s.getEmail());
         student.setSemester(s.getSemester());
-        student.setSkills(s.getSkills());
+        student.setSkills(skills);
     }
 
     @Override
