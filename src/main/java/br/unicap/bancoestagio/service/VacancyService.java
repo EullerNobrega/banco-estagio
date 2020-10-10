@@ -3,17 +3,16 @@ package br.unicap.bancoestagio.service;
 import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 
 import br.unicap.bancoestagio.model.Vacancy;
 import br.unicap.bancoestagio.repository.VacancyRepository;
 import br.unicap.bancoestagio.service.serviceInterface.IVacancyService;
+import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import io.quarkus.panache.common.Sort;
 
 @ApplicationScoped
 public class VacancyService implements IVacancyService {
-    @Inject
-    VacancyRepository vacancyRepository;
+    PanacheRepository<Vacancy> vacancyRepository = new VacancyRepository();
 
     @Override
     public void save(Vacancy v) {

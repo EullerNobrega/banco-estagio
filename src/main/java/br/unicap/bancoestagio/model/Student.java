@@ -2,8 +2,6 @@ package br.unicap.bancoestagio.model;
 
 import java.util.List;
 
-import javax.enterprise.inject.Model;
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
@@ -12,13 +10,12 @@ import io.quarkus.hibernate.orm.panache.PanacheEntity;
 
 @Entity
 @Table(name = "student")
-@Model
 public class Student extends PanacheEntity {
     private String registration;
     private String email;
     private String name;
     private int semester;
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany
     private List<Skill> skills;
 
     public String getRegistration() {

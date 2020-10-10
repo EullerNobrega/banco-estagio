@@ -2,7 +2,6 @@ package br.unicap.bancoestagio.controller;
 
 import java.util.List;
 
-import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.ws.rs.Consumes;
@@ -21,7 +20,6 @@ import br.unicap.bancoestagio.model.Vacancy;
 import br.unicap.bancoestagio.service.serviceInterface.IVacancyService;
 
 @Path("/vacancies")
-@ApplicationScoped
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class VacancyResource {

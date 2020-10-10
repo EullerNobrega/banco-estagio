@@ -1,0 +1,14 @@
+{
+    "registration": "2016107451",
+    "email": "euller@gmail.com",
+    "name": "euller nobrega",
+    "semester": 8,
+    "skills": [
+          {
+              "description" : "java"
+          },
+          {
+              "description" : "python"
+          }
+      ]
+  }
