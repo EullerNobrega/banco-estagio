@@ -2,7 +2,6 @@ package br.unicap.bancoestagio.controller;
 
 import java.util.List;
 
-import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.ws.rs.Consumes;
@@ -18,15 +17,17 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import br.unicap.bancoestagio.model.Vacancy;
-import br.unicap.bancoestagio.service.serviceInterface.IVacancyService;
+import br.unicap.bancoestagio.service.serviceInterface.IServiceStudent;
+import br.unicap.bancoestagio.service.serviceInterface.IServiceVacancy;
 
 @Path("/vacancies")
-@ApplicationScoped
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class VacancyResource {
     @Inject
-    IVacancyService vacancyService;
+    IServiceVacancy vacancyService;
+    @Inject
+    IServiceStudent studentVacancy;
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -53,7 +54,7 @@ public class VacancyResource {
     @Path("/{id}")
     @Transactional
     public Response update(@PathParam("id") Long id, Vacancy vacancy) {
-        vacancyService.update(vacancy);
+        vacancyService.update(id, vacancy);
         return Response.status(Status.ACCEPTED).build();
     }
 
@@ -64,5 +65,7 @@ public class VacancyResource {
         vacancyService.delete(id);
         return Response.status(Status.ACCEPTED).build();
     }
+
+    
 
 }

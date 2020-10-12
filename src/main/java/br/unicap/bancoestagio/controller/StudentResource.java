@@ -2,7 +2,6 @@ package br.unicap.bancoestagio.controller;
 
 import java.util.List;
 
-import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.ws.rs.Consumes;
@@ -20,14 +19,16 @@ import javax.ws.rs.core.Response.Status;
 import br.unicap.bancoestagio.model.Student;
 import br.unicap.bancoestagio.model.Vacancy;
 import br.unicap.bancoestagio.service.serviceInterface.IServiceStudent;
+import br.unicap.bancoestagio.service.serviceInterface.IServiceVacancy;
 
 @Path("/students")
-@ApplicationScoped
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class StudentResource {
     @Inject
     IServiceStudent studentService;
+    @Inject
+    IServiceVacancy vacancyService;
 
     @GET
     public List<Student> fetchAll() {
@@ -35,8 +36,8 @@ public class StudentResource {
     }
 
     @GET
-    @Path("/{registration}")
-    public Response get(@PathParam("registration") Long id) {
+    @Path("/{id}")
+    public Response get(@PathParam("id") Long id) {
         Student s = studentService.get(id);
         return Response.ok().entity(s).build();
     }
@@ -50,25 +51,25 @@ public class StudentResource {
     }
 
     @PUT
-    @Path("/{registration}")
+    @Path("/{id}")
     @Transactional
-    public Response update(@PathParam("registration") String registration, Student student) {
-        studentService.update(student);
+    public Response update(@PathParam("id") Long id, Student student) {
+        studentService.update(id, student);
         return Response.status(Status.ACCEPTED).build();
     }
 
     @DELETE
-    @Path("/{registration}")
+    @Path("/{id}")
     @Transactional
-    public Response delete(@PathParam("registration") Long id) {
+    public Response delete(@PathParam("id") Long id) {
         studentService.delete(id);
         return Response.status(Status.ACCEPTED).build();
     }
 
     @GET
-    @Path("/{registration}/vacancies")
-    public List<Vacancy> findVacanciesForStudent(@PathParam("registration") Long id) {
-        return null;
+    @Path("/{id}/vacancies")
+    public List<Vacancy> findVacanciesForStudent(@PathParam("id") Long id) {
+        return vacancyService.findVacanciesForStudent(id);
     }
 
 }

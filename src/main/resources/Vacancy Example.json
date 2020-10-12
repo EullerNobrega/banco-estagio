@@ -1,0 +1,12 @@
+{
+
+    "title": "Vaga estagio back-end",
+    "description": "leanworks ",
+    "email": "leanworks@gmail.com",
+    "minSemester" : 5,
+    "skills": [
+          {
+              "description" : "python"
+          }
+      ]
+  }

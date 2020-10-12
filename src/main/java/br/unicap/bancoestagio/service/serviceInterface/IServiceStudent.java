@@ -8,7 +8,7 @@ public interface IServiceStudent {
 
     public void save(Student s);
 
-    public void update(Student s);
+    public void update(Long id, Student s);
 
     public void delete(Long id);
 
@@ -16,6 +16,6 @@ public interface IServiceStudent {
 
     public Student get(Long id);
 
-    public List<Student> findStudentsForVacancy(Long idVacancy);
+    // public List<Student> findStudentsForVacancy(Long idVacancy);
 
 }
