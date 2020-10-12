@@ -5,20 +5,25 @@ import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
 
 import br.unicap.bancoestagio.model.Skill;
+import br.unicap.bancoestagio.model.Student;
 import br.unicap.bancoestagio.model.Vacancy;
 import br.unicap.bancoestagio.repository.VacancyRepository;
-import br.unicap.bancoestagio.service.serviceInterface.IVacancyService;
+import br.unicap.bancoestagio.service.serviceInterface.IServiceVacancy;
+import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import io.quarkus.panache.common.Sort;
 
 @ApplicationScoped
-public class VacancyService implements IVacancyService {
+public class VacancyService implements IServiceVacancy {
     PanacheRepository<Vacancy> vacancyRepository = new VacancyRepository();
     @Inject
     SkillService skillService;
-    
+    @Inject
+    StudentService studentService;
+
     @Override
     public void save(Vacancy v) {
         List<Skill> skills = new ArrayList();
@@ -58,8 +63,17 @@ public class VacancyService implements IVacancyService {
 
     @Override
     public List<Vacancy> findVacanciesForStudent(Long idStudent) {
-        // TODO Auto-generated method stub
-        return null;
+        Student student = studentService.get(idStudent);
+        List<Skill> skills = student.getSkills();
+        List<Vacancy> matchVacancies = new ArrayList();
+
+        skills.forEach(s -> {
+            List<Vacancy> list = vacancyRepository
+                    .find("select v from Vacancy v join fetch v.skills s where s.id = ?1", s.id).list();
+            matchVacancies.addAll(list);
+        });
+
+        return matchVacancies;
     }
 
 }

@@ -19,6 +19,7 @@ import javax.ws.rs.core.Response.Status;
 import br.unicap.bancoestagio.model.Student;
 import br.unicap.bancoestagio.model.Vacancy;
 import br.unicap.bancoestagio.service.serviceInterface.IServiceStudent;
+import br.unicap.bancoestagio.service.serviceInterface.IServiceVacancy;
 
 @Path("/students")
 @Produces(MediaType.APPLICATION_JSON)
@@ -26,6 +27,8 @@ import br.unicap.bancoestagio.service.serviceInterface.IServiceStudent;
 public class StudentResource {
     @Inject
     IServiceStudent studentService;
+    @Inject
+    IServiceVacancy vacancyService;
 
     @GET
     public List<Student> fetchAll() {
@@ -65,8 +68,8 @@ public class StudentResource {
 
     @GET
     @Path("/{id}/vacancies")
-    public List<Vacancy> findVacanciesForStudent(@PathParam("registration") Long id) {
-        return null;
+    public List<Vacancy> findVacanciesForStudent(@PathParam("id") Long id) {
+        return vacancyService.findVacanciesForStudent(id);
     }
 
 }

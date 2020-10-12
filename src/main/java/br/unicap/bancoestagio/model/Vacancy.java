@@ -58,4 +58,10 @@ public class Vacancy extends PanacheEntity {
         this.skills = skills;
     }
 
+    @Override
+    public String toString() {
+        return "Vacancy [description=" + description + ", email=" + email + ", minSemester=" + minSemester + ", skills="
+                + skills + ", title=" + title + "]";
+    }
+
 }

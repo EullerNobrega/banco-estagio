@@ -58,4 +58,10 @@ public class Student extends PanacheEntity {
         this.skills = skills;
     }
 
+    @Override
+    public String toString() {
+        return "Student [email=" + email + ", name=" + name + ", registration=" + registration + ", semester="
+                + semester + ", skills=" + skills + "]";
+    }
+    
 }

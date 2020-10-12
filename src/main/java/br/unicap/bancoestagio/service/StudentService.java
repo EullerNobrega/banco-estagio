@@ -61,9 +61,4 @@ public class StudentService implements IServiceStudent {
         return studentRepository.findById(id);
     }
 
-    @Override
-    public List<Student> findStudentsForVacancy(Long idVacancy) {
-        // TODO Auto-generated method stub
-        return null;
-    }
 }

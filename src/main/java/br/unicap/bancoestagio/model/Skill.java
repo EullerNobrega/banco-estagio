@@ -18,4 +18,9 @@ public class Skill extends PanacheEntity {
         this.description = description;
     }
 
+    @Override
+    public String toString() {
+        return "Skill [description=" + description + "]";
+    }
+
 }

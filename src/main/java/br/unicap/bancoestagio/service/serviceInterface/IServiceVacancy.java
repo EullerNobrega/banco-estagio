@@ -4,7 +4,7 @@ import java.util.List;
 
 import br.unicap.bancoestagio.model.Vacancy;
 
-public interface IVacancyService {
+public interface IServiceVacancy {
 
    public void save(Vacancy v);
 

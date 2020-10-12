@@ -17,14 +17,17 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import br.unicap.bancoestagio.model.Vacancy;
-import br.unicap.bancoestagio.service.serviceInterface.IVacancyService;
+import br.unicap.bancoestagio.service.serviceInterface.IServiceStudent;
+import br.unicap.bancoestagio.service.serviceInterface.IServiceVacancy;
 
 @Path("/vacancies")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class VacancyResource {
     @Inject
-    IVacancyService vacancyService;
+    IServiceVacancy vacancyService;
+    @Inject
+    IServiceStudent studentVacancy;
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -62,5 +65,7 @@ public class VacancyResource {
         vacancyService.delete(id);
         return Response.status(Status.ACCEPTED).build();
     }
+
+    
 
 }
