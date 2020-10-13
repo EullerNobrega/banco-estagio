@@ -16,14 +16,17 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.jboss.resteasy.annotations.SseElementType;
+
 import br.unicap.bancoestagio.model.Student;
 import br.unicap.bancoestagio.model.Vacancy;
 import br.unicap.bancoestagio.service.serviceInterface.IServiceStudent;
 import br.unicap.bancoestagio.service.serviceInterface.IServiceVacancy;
 
 @Path("/students")
-@Produces(MediaType.APPLICATION_JSON)
-@Consumes(MediaType.APPLICATION_JSON)
+@Produces(MediaType.SERVER_SENT_EVENTS)
+@Consumes(MediaType.SERVER_SENT_EVENTS)
+@SseElementType("application/json")
 public class StudentResource {
     @Inject
     IServiceStudent studentService;
@@ -31,6 +34,7 @@ public class StudentResource {
     IServiceVacancy vacancyService;
 
     @GET
+    @SseElementType("application/json")
     public List<Student> fetchAll() {
         return studentService.list();
     }
