@@ -4,11 +4,11 @@ import java.util.List;
 
 import br.unicap.bancoestagio.model.Vacancy;
 
-public interface IVacancyService {
+public interface IServiceVacancy {
 
    public void save(Vacancy v);
 
-   public void update(Vacancy v);
+   public void update(Long id, Vacancy v);
 
    public void delete(Long id);
 

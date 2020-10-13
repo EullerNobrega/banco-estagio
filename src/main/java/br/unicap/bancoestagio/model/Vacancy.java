@@ -2,8 +2,6 @@ package br.unicap.bancoestagio.model;
 
 import java.util.List;
 
-import javax.enterprise.inject.Model;
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
@@ -12,13 +10,12 @@ import io.quarkus.hibernate.orm.panache.PanacheEntity;
 
 @Entity
 @Table(name = "vacancy")
-@Model
 public class Vacancy extends PanacheEntity {
     private String title;
     private String description;
     private String email;
     private int minSemester;
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany
     private List<Skill> skills;
 
     public String getTitle() {
@@ -59,6 +56,12 @@ public class Vacancy extends PanacheEntity {
 
     public void setSkills(List<Skill> skills) {
         this.skills = skills;
+    }
+
+    @Override
+    public String toString() {
+        return "Vacancy [description=" + description + ", email=" + email + ", minSemester=" + minSemester + ", skills="
+                + skills + ", title=" + title + "]";
     }
 
 }
