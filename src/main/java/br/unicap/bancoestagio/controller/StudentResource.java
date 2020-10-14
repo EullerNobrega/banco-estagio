@@ -56,8 +56,6 @@ public class StudentResource {
     }
 
     @POST
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
     public Response create(Student student) throws JsonProcessingException {
         LOGGER.infof("Sending Student %s to Kafka", student);
         ObjectMapper objectMapper = new ObjectMapper();
