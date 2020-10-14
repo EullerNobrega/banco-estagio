@@ -41,7 +41,7 @@ public class StudentResource {
 
     @Inject
     @Channel("student-create")
-    Emitter<String> emiiter;
+    Emitter<String> createEmiiter;
 
     @GET
     public List<Student> fetchAll() {
@@ -60,8 +60,7 @@ public class StudentResource {
         LOGGER.infof("Sending Student %s to Kafka", student);
         ObjectMapper objectMapper = new ObjectMapper();
         String studentJson = objectMapper.writeValueAsString(student);
-        emiiter.send(studentJson);
-
+        createEmiiter.send(studentJson);
         return Response.status(Status.CREATED).build();
     }
 
@@ -73,11 +72,15 @@ public class StudentResource {
         return Response.status(Status.ACCEPTED).build();
     }
 
+    @Inject
+    @Channel("student-delete")
+    Emitter<String> deleteEmitter;
+
     @DELETE
     @Path("/{id}")
-    @Transactional
     public Response delete(@PathParam("id") Long id) {
-        studentService.delete(id);
+        LOGGER.infof("Sending id %d delete  to Kafka", id);
+        deleteEmitter.send(id.toString());
         return Response.status(Status.ACCEPTED).build();
     }
 
@@ -87,15 +90,8 @@ public class StudentResource {
         return vacancyService.findVacanciesForStudent(id);
     }
 
-    @Inject
-    @Channel("students-reload")
-    Emitter<String> reloadEmitter;
+    
 
-    @POST
-    @Path("/reload")
-    public Response reload() {
-        reloadEmitter.send("Reload Student");
-        return Response.accepted().build();
-    }
+
 
 }

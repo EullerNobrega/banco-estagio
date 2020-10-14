@@ -10,7 +10,7 @@ public interface IServiceStudent {
 
     public void update(Long id, Student s);
 
-    public void delete(Long id);
+    public void delete(String id);
 
     public List<Student> list();
 
