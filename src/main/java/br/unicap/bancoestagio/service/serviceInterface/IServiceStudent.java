@@ -6,7 +6,7 @@ import br.unicap.bancoestagio.model.Student;
 
 public interface IServiceStudent {
 
-    public void save(Student s);
+    public void save(String studentJsonSerialized);
 
     public void update(Long id, Student s);
 

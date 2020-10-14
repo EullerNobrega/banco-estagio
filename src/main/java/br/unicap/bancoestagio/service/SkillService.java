@@ -3,6 +3,7 @@ package br.unicap.bancoestagio.service;
 import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.transaction.Transactional;
 
 import br.unicap.bancoestagio.model.Skill;
 import br.unicap.bancoestagio.repository.SkillRepository;

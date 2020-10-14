@@ -16,9 +16,11 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Emitter;
-import org.eclipse.microprofile.reactive.messaging.Outgoing;
 import org.jboss.logging.Logger;
 
 import br.unicap.bancoestagio.model.Student;
@@ -35,9 +37,11 @@ public class StudentResource {
     @Inject
     IServiceVacancy vacancyService;
 
-    private static final Logger LOGGER = Logger.getLogger("StudentResource"); 
+    private static final Logger LOGGER = Logger.getLogger("StudentResource");
 
-    @Inject @Channel("students") Emitter<Student> emiiter;
+    @Inject
+    @Channel("student-create")
+    Emitter<String> emiiter;
 
     @GET
     public List<Student> fetchAll() {
@@ -52,11 +56,13 @@ public class StudentResource {
     }
 
     @POST
-    @Transactional
-    @Outgoing("generated-student")
-    public Response create(Student student) {
-        LOGGER.infof("Sending Student %s to Kafka", student.getName());
-        emiiter.send(student);
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response create(Student student) throws JsonProcessingException {
+        LOGGER.infof("Sending Student %s to Kafka", student);
+        ObjectMapper objectMapper = new ObjectMapper();
+        String studentJson = objectMapper.writeValueAsString(student);
+        emiiter.send(studentJson);
 
         return Response.status(Status.CREATED).build();
     }
@@ -81,6 +87,17 @@ public class StudentResource {
     @Path("/{id}/vacancies")
     public List<Vacancy> findVacanciesForStudent(@PathParam("id") Long id) {
         return vacancyService.findVacanciesForStudent(id);
+    }
+
+    @Inject
+    @Channel("students-reload")
+    Emitter<String> reloadEmitter;
+
+    @POST
+    @Path("/reload")
+    public Response reload() {
+        reloadEmitter.send("Reload Student");
+        return Response.accepted().build();
     }
 
 }
