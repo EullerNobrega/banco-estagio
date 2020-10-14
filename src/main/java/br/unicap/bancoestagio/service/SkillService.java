@@ -20,7 +20,7 @@ public class SkillService implements IServiceSkill {
 
     @Override
     public void update(Skill s) {
-        Skill skill = s.findById(s.id);
+        Skill skill = skillRepository.findById(s.id);
         skill.setDescription(s.getDescription());
     }
 

@@ -16,7 +16,10 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.jboss.resteasy.annotations.SseElementType;
+import org.eclipse.microprofile.reactive.messaging.Channel;
+import org.eclipse.microprofile.reactive.messaging.Emitter;
+import org.eclipse.microprofile.reactive.messaging.Outgoing;
+import org.jboss.logging.Logger;
 
 import br.unicap.bancoestagio.model.Student;
 import br.unicap.bancoestagio.model.Vacancy;
@@ -24,17 +27,19 @@ import br.unicap.bancoestagio.service.serviceInterface.IServiceStudent;
 import br.unicap.bancoestagio.service.serviceInterface.IServiceVacancy;
 
 @Path("/students")
-@Produces(MediaType.SERVER_SENT_EVENTS)
-@Consumes(MediaType.SERVER_SENT_EVENTS)
-@SseElementType("application/json")
+@Produces(MediaType.APPLICATION_JSON)
+@Consumes(MediaType.APPLICATION_JSON)
 public class StudentResource {
     @Inject
     IServiceStudent studentService;
     @Inject
     IServiceVacancy vacancyService;
 
+    private static final Logger LOGGER = Logger.getLogger("StudentResource"); 
+
+    @Inject @Channel("students") Emitter<Student> emiiter;
+
     @GET
-    @SseElementType("application/json")
     public List<Student> fetchAll() {
         return studentService.list();
     }
@@ -48,8 +53,10 @@ public class StudentResource {
 
     @POST
     @Transactional
+    @Outgoing("generated-student")
     public Response create(Student student) {
-        studentService.save(student);
+        LOGGER.infof("Sending Student %s to Kafka", student.getName());
+        emiiter.send(student);
 
         return Response.status(Status.CREATED).build();
     }

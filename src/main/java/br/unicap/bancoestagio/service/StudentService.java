@@ -21,7 +21,7 @@ public class StudentService implements IServiceStudent {
 
     @Override
     public void save(Student s) {
-        List<Skill> skills = new ArrayList();
+        List<Skill> skills = new ArrayList<Skill>();
         s.getSkills().forEach(skill -> skills.add(skillService.get(skill.getDescription())));
         s.setSkills(skills);
         studentRepository.persist(s);
@@ -30,7 +30,7 @@ public class StudentService implements IServiceStudent {
     @Override
     public void update(Long id, Student s) {
         Student student = studentRepository.findById(id);
-        List<Skill> skills = new ArrayList();
+        List<Skill> skills = new ArrayList<Skill>();
         
         s.getSkills().forEach(skill -> skills.add(skillService.get(skill.getDescription())));
         s.setSkills(skills);
