@@ -6,11 +6,11 @@ import br.unicap.bancoestagio.model.Student;
 
 public interface IServiceStudent {
 
-    public void save(String studentJsonSerialized);
+    public void save(Student student);
 
-    public void update(Long id, Student s);
+    public void update(Student s);
 
-    public void delete(String id);
+    public void delete(Long id);
 
     public List<Student> list();
 

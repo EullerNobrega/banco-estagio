@@ -1,9 +1,10 @@
 package br.unicap.bancoestagio.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
-import javax.transaction.Transactional;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -15,9 +16,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Emitter;
@@ -39,10 +37,6 @@ public class StudentResource {
 
     private static final Logger LOGGER = Logger.getLogger("StudentResource");
 
-    @Inject
-    @Channel("student-create")
-    Emitter<String> createEmiiter;
-
     @GET
     public List<Student> fetchAll() {
         return studentService.list();
@@ -55,32 +49,37 @@ public class StudentResource {
         return Response.ok().entity(s).build();
     }
 
+    @Inject
+    @Channel("student-create")
+    Emitter<Student> createEmitter;
+
     @POST
-    public Response create(Student student) throws JsonProcessingException {
+    public Response create(Student student) {
         LOGGER.infof("Sending Student %s to Kafka", student);
-        ObjectMapper objectMapper = new ObjectMapper();
-        String studentJson = objectMapper.writeValueAsString(student);
-        createEmiiter.send(studentJson);
+        createEmitter.send(student);
         return Response.status(Status.CREATED).build();
     }
 
+    @Inject
+    @Channel("student-update")
+    Emitter<Student> updateEmitter;
+
     @PUT
-    @Path("/{id}")
-    @Transactional
-    public Response update(@PathParam("id") Long id, Student student) {
-        studentService.update(id, student);
+    public Response update(Student student) {
+        LOGGER.infof("Sending Update student %s to Kafka", student);
+        updateEmitter.send(student);
         return Response.status(Status.ACCEPTED).build();
     }
 
     @Inject
     @Channel("student-delete")
-    Emitter<String> deleteEmitter;
+    Emitter<Long> deleteEmitter;
 
     @DELETE
     @Path("/{id}")
     public Response delete(@PathParam("id") Long id) {
         LOGGER.infof("Sending id %d delete  to Kafka", id);
-        deleteEmitter.send(id.toString());
+        deleteEmitter.send(id);
         return Response.status(Status.ACCEPTED).build();
     }
 
@@ -89,9 +88,5 @@ public class StudentResource {
     public List<Vacancy> findVacanciesForStudent(@PathParam("id") Long id) {
         return vacancyService.findVacanciesForStudent(id);
     }
-
-    
-
-
 
 }

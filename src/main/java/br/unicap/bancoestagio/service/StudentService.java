@@ -30,10 +30,8 @@ public class StudentService implements IServiceStudent {
     @Incoming("student-create")
     @Transactional
     @Override
-    public void save(String studentJsonSerialized) {
+    public void save(Student s) {
         try {
-            Student s = new ObjectMapper().readValue(studentJsonSerialized, Student.class);
-            LOGGER.infof("Chegou %s", s);
             List<Skill> skills = new ArrayList<Skill>();
             s.getSkills().forEach(skill -> skills.add(skillService.get(skill.getDescription())));
             
@@ -44,11 +42,11 @@ public class StudentService implements IServiceStudent {
         } 
     }
 
-    // @Incoming("student-update")
-    // @Transactional
+    @Incoming("student-update")
+    @Transactional
     @Override
-    public void update(Long id, Student s) {
-        Student student = studentRepository.findById(id);
+    public void update(Student s) {
+        Student student = studentRepository.find("registration", s.getRegistration()).singleResult();
         List<Skill> skills = new ArrayList<Skill>();
         
         s.getSkills().forEach(skill -> skills.add(skillService.get(skill.getDescription())));
@@ -62,9 +60,9 @@ public class StudentService implements IServiceStudent {
     @Incoming("student-delete")
     @Transactional
     @Override
-    public void delete(String id) {
-        if (studentRepository.isPersistent(get(Long.parseLong(id)))) {
-            studentRepository.deleteById(Long.parseLong(id));
+    public void delete(Long id) {
+        if (studentRepository.isPersistent(get(id))) {
+            studentRepository.deleteById(id);
         }
 
     }
