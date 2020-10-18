@@ -52,7 +52,6 @@ public class StudentResource {
     @Inject
     @Channel("student-create")
     Emitter<Student> createEmitter;
-
     @POST
     public Response create(Student student) {
         LOGGER.infof("Sending Student %s to Kafka", student);
