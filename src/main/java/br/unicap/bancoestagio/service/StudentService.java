@@ -57,6 +57,7 @@ public class StudentService implements IServiceStudent {
         student.setSemester(s.getSemester());
         student.setSkills(skills);
     }
+    
     @Incoming("student-delete")
     @Transactional
     @Override
