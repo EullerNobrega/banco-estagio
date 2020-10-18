@@ -1,6 +1,7 @@
 package br.unicap.bancoestagio.model;
 
 import java.util.List;
+import java.io.Serializable;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
@@ -10,7 +11,9 @@ import io.quarkus.hibernate.orm.panache.PanacheEntity;
 
 @Entity
 @Table(name = "vacancy")
-public class Vacancy extends PanacheEntity {
+public class Vacancy extends PanacheEntity implements Serializable{
+    
+    private static final long serialVersionUID = 1L;
     private String title;
     private String description;
     private String email;

@@ -3,7 +3,6 @@ package br.unicap.bancoestagio.controller;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.transaction.Transactional;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -15,10 +14,14 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import org.eclipse.microprofile.reactive.messaging.Channel;
+import org.eclipse.microprofile.reactive.messaging.Emitter;
+import org.jboss.logging.Logger;
 
 import br.unicap.bancoestagio.model.Vacancy;
 import br.unicap.bancoestagio.service.serviceInterface.IServiceStudent;
 import br.unicap.bancoestagio.service.serviceInterface.IServiceVacancy;
+
 
 @Path("/vacancies")
 @Produces(MediaType.APPLICATION_JSON)
@@ -26,8 +29,8 @@ import br.unicap.bancoestagio.service.serviceInterface.IServiceVacancy;
 public class VacancyResource {
     @Inject
     IServiceVacancy vacancyService;
-    @Inject
-    IServiceStudent studentVacancy;
+
+    private static final Logger LOGGER = Logger.getLogger("VacancyResource");
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -42,27 +45,34 @@ public class VacancyResource {
         return Response.ok().entity(v).build();
     }
 
+    @Inject
+    @Channel("vacancy-create")
+    Emitter<Vacancy> createEmitter;
     @POST
-    @Transactional
     public Response create(Vacancy vacancy) {
-        vacancyService.save(vacancy);
-
+        LOGGER.infof("Sending Vacancy %s to Kafka", vacancy);
+        createEmitter.send(vacancy);
         return Response.status(Status.CREATED).build();
     }
 
+    @Inject
+    @Channel("vacancy-update")
+    Emitter<Vacancy> updateEmitter;
     @PUT
-    @Path("/{id}")
-    @Transactional
-    public Response update(@PathParam("id") Long id, Vacancy vacancy) {
-        vacancyService.update(id, vacancy);
+    public Response update(Vacancy vacancy) {
+        LOGGER.infof("Sending Update vacancy %s to Kafka", vacancy);
+        updateEmitter.send(vacancy);
         return Response.status(Status.ACCEPTED).build();
     }
 
+    @Inject
+    @Channel("vacancy-delete")
+    Emitter<Long> deleteEmitter;
     @DELETE
     @Path("/{id}")
-    @Transactional
     public Response delete(@PathParam("id") Long id) {
-        vacancyService.delete(id);
+        LOGGER.infof("Sending id %s delete  to Kafka", id);
+        deleteEmitter.send(id);
         return Response.status(Status.ACCEPTED).build();
     }
 
