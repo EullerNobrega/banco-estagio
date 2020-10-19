@@ -5,6 +5,9 @@ import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
+import org.jboss.logging.Logger;
+import org.eclipse.microprofile.reactive.messaging.Incoming;
 
 import br.unicap.bancoestagio.model.Skill;
 import br.unicap.bancoestagio.model.Student;
@@ -22,6 +25,10 @@ public class VacancyService implements IServiceVacancy {
     @Inject
     StudentService studentService;
 
+    private static final Logger LOGGER = Logger.getLogger("VacancyService");
+
+    @Incoming("vacancy-create")
+    @Transactional
     @Override
     public void save(Vacancy v) {
         List<Skill> skills = new ArrayList<Skill>();
@@ -30,9 +37,11 @@ public class VacancyService implements IServiceVacancy {
         vacancyRepository.persist(v);
     }
 
+    @Incoming("vacancy-update")
+    @Transactional
     @Override
-    public void update(Long id, Vacancy v) {
-        Vacancy vacancy = vacancyRepository.findById(id);
+    public void update(Vacancy v) {
+        Vacancy vacancy = vacancyRepository.find("email", v.getEmail()).singleResult();
         List<Skill> skills = new ArrayList<Skill>();
         v.getSkills().forEach(skill -> skills.add(skillService.get(skill.getDescription())));
 
@@ -43,6 +52,8 @@ public class VacancyService implements IServiceVacancy {
         vacancy.setSkills(skills);
     }
 
+    @Incoming("vacancy-delete")
+    @Transactional
     @Override
     public void delete(Long id) {
         vacancyRepository.deleteById(id);

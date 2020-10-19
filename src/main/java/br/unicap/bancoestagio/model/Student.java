@@ -12,9 +12,7 @@ import io.quarkus.hibernate.orm.panache.PanacheEntity;
 @Entity
 @Table(name = "student")
 public class Student extends PanacheEntity implements Serializable{
-    /**
-     *
-     */
+    
     private static final long serialVersionUID = 1L;
     private String registration;
     private String email;
