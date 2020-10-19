@@ -3,6 +3,7 @@ package br.unicap.bancoestagio.service;
 import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.transaction.Transactional;
 
 import br.unicap.bancoestagio.model.Skill;
 import br.unicap.bancoestagio.repository.SkillRepository;
@@ -20,7 +21,7 @@ public class SkillService implements IServiceSkill {
 
     @Override
     public void update(Skill s) {
-        Skill skill = s.findById(s.id);
+        Skill skill = skillRepository.findById(s.id);
         skill.setDescription(s.getDescription());
     }
 

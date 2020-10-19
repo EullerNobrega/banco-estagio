@@ -5,14 +5,15 @@ import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
+import javax.transaction.Transactional;
+import org.jboss.logging.Logger;
+import org.eclipse.microprofile.reactive.messaging.Incoming;
 
 import br.unicap.bancoestagio.model.Skill;
 import br.unicap.bancoestagio.model.Student;
 import br.unicap.bancoestagio.model.Vacancy;
 import br.unicap.bancoestagio.repository.VacancyRepository;
 import br.unicap.bancoestagio.service.serviceInterface.IServiceVacancy;
-import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import io.quarkus.panache.common.Sort;
 
@@ -24,18 +25,24 @@ public class VacancyService implements IServiceVacancy {
     @Inject
     StudentService studentService;
 
+    private static final Logger LOGGER = Logger.getLogger("VacancyService");
+
+    @Incoming("vacancy-create")
+    @Transactional
     @Override
     public void save(Vacancy v) {
-        List<Skill> skills = new ArrayList();
+        List<Skill> skills = new ArrayList<Skill>();
         v.getSkills().forEach(skill -> skills.add(skillService.get(skill.getDescription())));
         v.setSkills(skills);
         vacancyRepository.persist(v);
     }
 
+    @Incoming("vacancy-update")
+    @Transactional
     @Override
-    public void update(Long id, Vacancy v) {
-        Vacancy vacancy = vacancyRepository.findById(id);
-        List<Skill> skills = new ArrayList();
+    public void update(Vacancy v) {
+        Vacancy vacancy = vacancyRepository.find("email", v.getEmail()).singleResult();
+        List<Skill> skills = new ArrayList<Skill>();
         v.getSkills().forEach(skill -> skills.add(skillService.get(skill.getDescription())));
 
         vacancy.setDescription(v.getDescription());
@@ -45,6 +52,8 @@ public class VacancyService implements IServiceVacancy {
         vacancy.setSkills(skills);
     }
 
+    @Incoming("vacancy-delete")
+    @Transactional
     @Override
     public void delete(Long id) {
         vacancyRepository.deleteById(id);
@@ -65,7 +74,7 @@ public class VacancyService implements IServiceVacancy {
     public List<Vacancy> findVacanciesForStudent(Long idStudent) {
         Student student = studentService.get(idStudent);
         List<Skill> skills = student.getSkills();
-        List<Vacancy> matchVacancies = new ArrayList();
+        List<Vacancy> matchVacancies = new ArrayList<Vacancy>();
 
         skills.forEach(s -> {
             List<Vacancy> list = vacancyRepository
