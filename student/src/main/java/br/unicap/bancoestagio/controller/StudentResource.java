@@ -55,11 +55,5 @@ public class StudentResource {
         return Response.status(Status.ACCEPTED).build();
     }
 
-    @GET
-    @Path("/{id}/vacancies")
-    public List<Vacancy> vacanciesForStudent(@PathParam("id") Long id) {
-        return studentService.findVacanciesForStudent(id);
-    }
-
 
 }

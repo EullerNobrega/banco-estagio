@@ -16,4 +16,5 @@ public interface IServiceVacancy {
 
    public Vacancy get(Long id);
 
+   public List<Vacancy> findVacanciesForStudent(Long id);
 }

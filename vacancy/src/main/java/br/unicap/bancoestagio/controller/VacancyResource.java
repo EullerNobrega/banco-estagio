@@ -56,6 +56,10 @@ public class VacancyResource {
         return Response.status(Status.ACCEPTED).build();
     }
 
-    
+    @GET
+    @Path("/{id}/vacancies")
+    public List<Vacancy> vacanciesForStudent(@PathParam("id") Long id) {
+        return vacancyService.findVacanciesForStudent(id);
+    }
 
 }

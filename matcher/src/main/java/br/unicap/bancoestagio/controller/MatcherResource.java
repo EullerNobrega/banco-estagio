@@ -2,7 +2,7 @@ package br.unicap.bancoestagio.controller;
 
 
 import br.unicap.bancoestagio.model.Vacancy;
-import br.unicap.bancoestagio.service.ServiceStudentAPI;
+import br.unicap.bancoestagio.service.ServiceVacancyAPI;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 import javax.ws.rs.*;
@@ -15,12 +15,12 @@ import java.util.List;
 public class MatcherResource {
 
     @RestClient
-    ServiceStudentAPI serviceStudentAPI;
+    ServiceVacancyAPI serviceVacancyAPI;
 
     @GET
     @Path("/{id}/vacancies")
     public List<Vacancy> findVacanciesForStudent(@PathParam("id") Long id) {
-        return serviceStudentAPI.vacanciesForStudent(id);
+        return serviceVacancyAPI.vacanciesForStudent(id);
     }
 
 }

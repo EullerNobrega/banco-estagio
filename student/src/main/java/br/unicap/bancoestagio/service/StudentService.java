@@ -65,19 +65,6 @@ public class StudentService implements IServiceStudent {
         return studentRepository.findById(id);
     }
 
-    public List<Vacancy> findVacanciesForStudent(Long idStudent) {
-        VacancyRepository vacancyRepository = new VacancyRepository();
-        Student student = get(idStudent);
-        List<Skill> skills = student.getSkills();
-        List<Vacancy> matchVacancies = new ArrayList<Vacancy>();
 
-        skills.forEach(s -> {
-            List<Vacancy> list = vacancyRepository
-                    .find("select v from Vacancy v join fetch v.skills s where s.id = ?1", s.id).list();
-            matchVacancies.addAll(list);
-        });
-
-        return matchVacancies;
-    }
 
 }
