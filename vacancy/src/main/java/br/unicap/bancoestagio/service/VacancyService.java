@@ -66,5 +66,4 @@ public class VacancyService implements IServiceVacancy {
     }
 
 
-
 }

@@ -1,7 +1,10 @@
 package br.unicap.bancoestagio.service;
 
+import br.unicap.bancoestagio.model.Skill;
 import br.unicap.bancoestagio.model.Student;
+import br.unicap.bancoestagio.model.Vacancy;
 import br.unicap.bancoestagio.repository.StudentRepository;
+import br.unicap.bancoestagio.repository.VacancyRepository;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import io.quarkus.panache.common.Sort;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
@@ -9,6 +12,7 @@ import org.jboss.logging.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 
 @ApplicationScoped
@@ -59,6 +63,21 @@ public class StudentService implements IServiceStudent {
     @Override
     public Student get(Long id) {
         return studentRepository.findById(id);
+    }
+
+    public List<Vacancy> findVacanciesForStudent(Long idStudent) {
+        VacancyRepository vacancyRepository = new VacancyRepository();
+        Student student = get(idStudent);
+        List<Skill> skills = student.getSkills();
+        List<Vacancy> matchVacancies = new ArrayList<Vacancy>();
+
+        skills.forEach(s -> {
+            List<Vacancy> list = vacancyRepository
+                    .find("select v from Vacancy v join fetch v.skills s where s.id = ?1", s.id).list();
+            matchVacancies.addAll(list);
+        });
+
+        return matchVacancies;
     }
 
 }

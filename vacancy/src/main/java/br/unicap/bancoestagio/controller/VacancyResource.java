@@ -4,6 +4,7 @@ import br.unicap.bancoestagio.model.Vacancy;
 import br.unicap.bancoestagio.service.IServiceVacancy;
 import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Emitter;
+import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 import org.jboss.logging.Logger;
 
 import javax.inject.Inject;
@@ -36,34 +37,22 @@ public class VacancyResource {
         return Response.ok().entity(v).build();
     }
 
-    @Inject
-    @Channel("vacancy-create")
-    Emitter<Vacancy> createEmitter;
     @POST
     public Response create(Vacancy vacancy) {
-        LOGGER.infof("Sending Vacancy %s to Kafka", vacancy);
-        createEmitter.send(vacancy);
+        vacancyService.save(vacancy);
         return Response.status(Status.CREATED).build();
     }
 
-    @Inject
-    @Channel("vacancy-update")
-    Emitter<Vacancy> updateEmitter;
     @PUT
     public Response update(Vacancy vacancy) {
-        LOGGER.infof("Sending Update vacancy %s to Kafka", vacancy);
-        updateEmitter.send(vacancy);
+        vacancyService.update(vacancy);
         return Response.status(Status.ACCEPTED).build();
     }
 
-    @Inject
-    @Channel("vacancy-delete")
-    Emitter<Long> deleteEmitter;
     @DELETE
     @Path("/{id}")
     public Response delete(@PathParam("id") Long id) {
-        LOGGER.infof("Sending id %s delete  to Kafka", id);
-        deleteEmitter.send(id);
+        vacancyService.delete(id);
         return Response.status(Status.ACCEPTED).build();
     }
 

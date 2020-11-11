@@ -2,9 +2,9 @@ package br.unicap.bancoestagio.controller;
 
 
 import br.unicap.bancoestagio.model.Vacancy;
-import br.unicap.bancoestagio.service.MatcherService;
+import br.unicap.bancoestagio.service.ServiceStudentAPI;
+import org.eclipse.microprofile.rest.client.inject.RestClient;
 
-import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
@@ -13,13 +13,14 @@ import java.util.List;
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class MatcherResource {
-    @Inject
-    MatcherService matcherService;
+
+    @RestClient
+    ServiceStudentAPI serviceStudentAPI;
 
     @GET
     @Path("/{id}/vacancies")
     public List<Vacancy> findVacanciesForStudent(@PathParam("id") Long id) {
-        return matcherService.findVacanciesForStudent(id);
+        return serviceStudentAPI.vacanciesForStudent(id);
     }
 
 }
